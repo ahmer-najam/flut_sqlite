@@ -1,0 +1,1 @@
+'CREATE TABLE contacts (id int PRIMARY KEY,name TEXT,mobile TEXT)'
