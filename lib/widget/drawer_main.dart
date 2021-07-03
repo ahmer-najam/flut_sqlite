@@ -1,3 +1,4 @@
+import 'package:flut_sqlite/pages/order_header_page.dart';
 import 'package:flut_sqlite/pages/product_page.dart';
 import 'package:flutter/material.dart';
 import '../pages/product_color_page.dart';
@@ -39,6 +40,14 @@ class DrawerMain extends StatelessWidget {
                   color: Theme.of(context).primaryColor),
             ),
           ),
+          SizedBox(
+            height: 5,
+          ),
+          buildListTile("Orders", Icons.restaurant, () {
+            Navigator.of(context)
+                .pushReplacementNamed(OrderHeaderPage().routeName);
+          }),
+          Divider(),
           SizedBox(
             height: 5,
           ),

@@ -1,48 +1,55 @@
 import 'package:flutter/material.dart';
-import '../models/product.dart';
+import '../models/order_header.dart';
 import '../utils/database_helper.dart';
 import '../widget/drawer_main.dart';
-import '../pages/product_form_page.dart';
+import '../pages/order_header_form_page.dart';
 
-class ProductPage extends StatefulWidget {
-  final String routeName = "/product";
+class OrderHeaderPage extends StatefulWidget {
+  final String routeName = "/order-header";
 
   @override
-  _ProductPageState createState() => _ProductPageState();
+  _OrderHeaderPageState createState() => _OrderHeaderPageState();
 }
 
-class _ProductPageState extends State<ProductPage> {
-  final String routeName = "/product";
+class _OrderHeaderPageState extends State<OrderHeaderPage> {
+  final String routeName = "/orderHeader";
   final _formKey = GlobalKey<FormState>();
-  Product _product = Product(id: '', name: '', brandId: '', barcode: '');
-  List<Product> _productList = [];
-  final _nameController = TextEditingController();
+  OrderHeader _orderHeader = OrderHeader(
+      id: '',
+      orderNumber: '',
+      orderDate: DateTime.now().toIso8601String(),
+      customerId: '',
+      orderAmount: 0);
+  List<OrderHeader> _orderHeaderList = [];
+
   DatabaseHelper _databaseHelper;
   String qrCode = "";
   final darkBlueColor = Color(0xff486579);
-  Product _updatedProduct;
+  OrderHeader _updatedOrderHeader;
 
   @override
   void initState() {
     super.initState();
     _databaseHelper = DatabaseHelper.instance;
-    _refreshProductList();
+    _refreshOrderHeaderList();
   }
 
   @override
   Widget build(BuildContext context) {
-    _updatedProduct = ModalRoute.of(context).settings.arguments as Product;
+    _updatedOrderHeader =
+        ModalRoute.of(context).settings.arguments as OrderHeader;
 
-    if (_updatedProduct != null) {
-      Product x = this
-          ._productList
-          .firstWhere((product) => product.id == _updatedProduct.id);
+    if (_updatedOrderHeader != null) {
+      OrderHeader x = this._orderHeaderList.firstWhere(
+          (orderHeader) => orderHeader.id == _updatedOrderHeader.id);
 
       if (x == null) {
-        this._productList.add(_updatedProduct);
+        this._orderHeaderList.add(_updatedOrderHeader);
       } else {
-        x.name = _updatedProduct.name;
-        x.brandId = _updatedProduct.brandId;
+        x.orderNumber = _updatedOrderHeader.orderNumber;
+        x.customerId = _updatedOrderHeader.customerId;
+        x.orderDate = _updatedOrderHeader.orderDate;
+        x.orderAmount = _updatedOrderHeader.orderAmount;
       }
     }
 
@@ -52,7 +59,7 @@ class _ProductPageState extends State<ProductPage> {
           // backgroundColor: Colors.grey[200],
           title: Center(
               child: Text(
-            "Products",
+            "OrderHeaders",
             // style: TextStyle(fontWeight: FontWeight.bold, color: darkBlueColor),
           )),
         ),
@@ -67,11 +74,11 @@ class _ProductPageState extends State<ProductPage> {
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.add),
             onPressed: () {
-              Navigator.pushNamed(context, ProductFormPage().routeName)
+              Navigator.pushNamed(context, OrderHeaderFormPage().routeName)
                   .then((value) {
                 if (value != null) {
-                  this._product = value as Product;
-                  this._productList.add(_product);
+                  this._orderHeader = value as OrderHeader;
+                  this._orderHeaderList.add(_orderHeader);
                   setState(() {});
                 }
               });
@@ -84,7 +91,7 @@ class _ProductPageState extends State<ProductPage> {
           margin: EdgeInsets.fromLTRB(20, 30, 20, 0),
           child: ListView.builder(
               padding: EdgeInsets.all(10),
-              itemCount: _productList.length,
+              itemCount: _orderHeaderList.length,
               itemBuilder: (context, index) {
                 return Column(
                   children: [
@@ -95,20 +102,20 @@ class _ProductPageState extends State<ProductPage> {
                         size: 40,
                       ),
                       title: Text(
-                        _productList[index].name.toUpperCase(),
+                        _orderHeaderList[index].orderNumber.toUpperCase(),
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
-                        _productList[index].brandId.toUpperCase(),
+                        _orderHeaderList[index].orderAmount.toString(),
                         style: TextStyle(
                             fontSize: 12, fontWeight: FontWeight.bold),
                       ),
                       onTap: () {
-                        _product = this._productList[index];
+                        _orderHeader = this._orderHeaderList[index];
                         Navigator.of(context).pushNamed(
-                            ProductFormPage().routeName,
-                            arguments: (_product));
+                            OrderHeaderFormPage().routeName,
+                            arguments: (_orderHeader));
                       },
                     ),
                     Divider(
@@ -120,39 +127,10 @@ class _ProductPageState extends State<ProductPage> {
         ),
       );
 
-  // onSubmit() async {
-  //   try {
-  //     var form = _formKey.currentState;
-
-  //     if (form.validate()) {
-  //       form.save();
-
-  //       if (this._product.id == null || this._product.id == "") {
-  //         await _databaseHelper.insertProduct(_product);
-  //       } else {
-  //         await _databaseHelper.updateProduct(_product);
-  //       }
-
-  //       _refreshProductList();
-  //       _resetForm();
-  //     }
-  //   } on Exception catch (e) {
-  //     _nameController.text = e.toString();
-  //   }
-  // }
-
-  // _resetForm() {
-  //   setState(() {
-  //     _formKey.currentState.reset();
-  //     _nameController.clear();
-  //     _product.id = null;
-  //   });
-  // }
-
-  _refreshProductList() async {
-    List<Product> x = await _databaseHelper.getProduct();
+  _refreshOrderHeaderList() async {
+    List<OrderHeader> x = await _databaseHelper.getOrderHeader();
     setState(() {
-      _productList = x;
+      _orderHeaderList = x;
     });
   }
 }

@@ -1,5 +1,3 @@
-import 'package:flut_sqlite/pages/product_form_page.dart';
-import 'package:flut_sqlite/pages/product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -12,6 +10,10 @@ import '../pages/brand_page.dart';
 import '../pages/product_size_page.dart';
 import '../pages/customer_page.dart';
 import '../pages/customer_form_page.dart';
+import '../pages/order_header_form_page.dart';
+import '../pages/order_header_page.dart';
+import '../pages/product_form_page.dart';
+import '../pages/product_page.dart';
 
 const darkBlueColor = Color(0xff486579);
 void main() {
@@ -41,6 +43,8 @@ class MyApp extends StatelessWidget {
         CustomerFormPage().routeName: (context) => CustomerFormPage(),
         ProductPage().routeName: (context) => ProductPage(),
         ProductFormPage().routeName: (context) => ProductFormPage(),
+        OrderHeaderPage().routeName: (context) => OrderHeaderPage(),
+        OrderHeaderFormPage().routeName: (context) => OrderHeaderFormPage(),
       },
       debugShowCheckedModeBanner: false,
     );

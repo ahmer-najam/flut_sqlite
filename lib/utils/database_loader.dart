@@ -1,3 +1,4 @@
+import 'package:flut_sqlite/models/order_header.dart';
 import 'package:flut_sqlite/models/product.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:uuid/uuid.dart';
@@ -81,7 +82,18 @@ class DatabaseLoader {
           CREATE TABLE IF NOT EXISTS ${Product.tblProduct}(
         ${Product.colId} TEXT PRIMARY KEY,
         ${Product.colName} TEXT NOT NULL,
-        ${Product.colBrandId} TEXT NOT NULL)
+        ${Product.colBrandId} TEXT NOT NULL,
+        ${Product.colBarCode} TEXT NOT NULL)
+      ''');
+
+    db.execute("DROP TABLE IF EXISTS ${OrderHeader.tblOrderHeader}");
+    db.execute('''
+          CREATE TABLE IF NOT EXISTS ${OrderHeader.tblOrderHeader}(
+        ${OrderHeader.colId} TEXT PRIMARY KEY,
+        ${OrderHeader.colOrderNumber} TEXT NOT NULL,
+        ${OrderHeader.colOrderDate} TEXT NOT NULL,
+        ${OrderHeader.colCustomerId} TEXT NOT NULL,
+        ${OrderHeader.colOrderAmount} DOUBLE NOT NULL)
       ''');
   }
 

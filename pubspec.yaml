@@ -30,6 +30,7 @@ dependencies:
   sqflite: any
   path_provider: any
   uuid: any
+  intl: any
   flutter_typeahead: any
   qrscan:
     any
