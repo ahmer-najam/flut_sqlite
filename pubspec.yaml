@@ -30,7 +30,13 @@ dependencies:
   sqflite: any
   path_provider: any
   uuid: any
-  sqflite_migration_service: ^1.0.6
+  flutter_typeahead: any
+  qrscan:
+    any
+    # scan QR Code
+  # flutter_barcode_scanner: any
+  # create QR Code
+  # barcode_widget: ^1.5.0
 
 dev_dependencies:
   flutter_test:

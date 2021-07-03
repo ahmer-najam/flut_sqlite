@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:uuid/uuid.dart';
 
 class Contact {
   static const tblContact = 'contacts';
@@ -14,14 +13,8 @@ class Contact {
   Contact({@required this.id, @required this.name, @required this.mobile});
 
   Map<String, dynamic> toMap() {
-    if (id == null || id.isEmpty || id == "") {
-      var uuid = new Uuid();
-      id = uuid.v1();
-    }
-
     var map = <String, dynamic>{colId: id, colName: name, colMobile: mobile};
 
-    // if (id != null) map[colId] = id;
     return map;
   }
 

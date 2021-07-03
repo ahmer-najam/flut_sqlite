@@ -1,6 +1,17 @@
-import 'package:flut_sqlite/models/contact.dart';
-import 'package:flut_sqlite/utils/database_helper.dart';
+import 'package:flut_sqlite/pages/product_form_page.dart';
+import 'package:flut_sqlite/pages/product_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../utils/database_helper.dart';
+import '../pages/product_color_page.dart';
+import '../models/contact.dart';
+import '../pages/garment_type_page.dart';
+import '../pages/treatment_page.dart';
+import '../pages/brand_page.dart';
+import '../pages/product_size_page.dart';
+import '../pages/customer_page.dart';
+import '../pages/customer_form_page.dart';
 
 const darkBlueColor = Color(0xff486579);
 void main() {
@@ -16,7 +27,21 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+
+      // home: CityPage(),
+      initialRoute: "/",
+      routes: {
+        "/": (context) => GarmentTypePage(),
+        ProductColorPage().routeName: (context) => ProductColorPage(),
+        GarmentTypePage().routeName: (context) => GarmentTypePage(),
+        TreatmentPage().routeName: (context) => TreatmentPage(),
+        BrandPage().routeName: (context) => BrandPage(),
+        ProductSizePage().routeName: (context) => ProductSizePage(),
+        CustomerPage().routeName: (context) => CustomerPage(),
+        CustomerFormPage().routeName: (context) => CustomerFormPage(),
+        ProductPage().routeName: (context) => ProductPage(),
+        ProductFormPage().routeName: (context) => ProductFormPage(),
+      },
       debugShowCheckedModeBanner: false,
     );
   }
@@ -34,6 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final _nameController = TextEditingController();
   final _mobileController = TextEditingController();
   DatabaseHelper _databaseHelper;
+  String qrCode = "";
 
   @override
   void initState() {
@@ -45,24 +71,25 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
-      appBar: AppBar(
-        backgroundColor: Colors.grey[200],
-        title: Center(
-            child: Text(
-          "Flutter Sqlite",
-          style: TextStyle(fontWeight: FontWeight.bold, color: darkBlueColor),
-        )),
-      ),
-      body: Container(
-        child: Column(
-          children: [
-            _form(),
-            _list(),
-          ],
+        backgroundColor: Colors.grey[300],
+        appBar: AppBar(
+          backgroundColor: Colors.grey[200],
+          title: Center(
+              child: Text(
+            "Flutter Sqlite",
+            style: TextStyle(fontWeight: FontWeight.bold, color: darkBlueColor),
+          )),
         ),
-      ),
-    );
+        body: Container(
+          child: Column(
+            children: [
+              _form(),
+              _list(),
+            ],
+          ),
+        ),
+        floatingActionButton:
+            FloatingActionButton(child: Icon(Icons.add), onPressed: () {}));
   }
 
   _form() => Container(
@@ -149,6 +176,26 @@ class _MyHomePageState extends State<MyHomePage> {
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w500),
                       ),
+                      trailing: IconButton(
+                        icon: Icon(
+                          Icons.delete_sweep,
+                          color: darkBlueColor,
+                        ),
+                        onPressed: () async {
+                          await _databaseHelper
+                              .deleteContact(_contactList[index].id);
+                          _resetForm();
+                          _refreshContactList();
+                        },
+                      ),
+                      onTap: () {
+                        setState(() {
+                          _contact = this._contactList[index];
+                          _nameController.text = this._contactList[index].name;
+                          _mobileController.text =
+                              this._contactList[index].mobile;
+                        });
+                      },
                     ),
                     Divider(
                       height: 5,
@@ -160,18 +207,33 @@ class _MyHomePageState extends State<MyHomePage> {
       );
 
   onSubmit() async {
-    var form = _formKey.currentState;
+    try {
+      var form = _formKey.currentState;
 
-    if (form.validate()) {
-      form.save();
-      await _databaseHelper.insertContact(_contact);
-      // _contactList.add(Contact(
-      //     id: _contact.id, name: _contact.name, mobile: _contact.mobile));
-      form.reset();
-      _refreshContactList();
-      // form.reset();
-      print(_contact.mobile);
+      if (form.validate()) {
+        form.save();
+
+        if (this._contact.id == null || this._contact.id == "") {
+          await _databaseHelper.insertContact(_contact);
+        } else {
+          await _databaseHelper.updateContact(_contact);
+        }
+
+        _refreshContactList();
+        _resetForm();
+      }
+    } on Exception catch (e) {
+      _nameController.text = e.toString();
     }
+  }
+
+  _resetForm() {
+    setState(() {
+      _formKey.currentState.reset();
+      _nameController.clear();
+      _mobileController.clear();
+      _contact.id = null;
+    });
   }
 
   _refreshContactList() async {
@@ -180,4 +242,31 @@ class _MyHomePageState extends State<MyHomePage> {
       _contactList = x;
     });
   }
+
+  // Future<void> scanQRCode() async {
+  //   try {
+  //     final qrCode = await FlutterBarcodeScanner.scanBarcode(
+  //       '#ff6666',
+  //       'Cancel',
+  //       true,
+  //       ScanMode.DEFAULT,
+  //     );
+
+  //     if (!mounted) return "";
+
+  //     setState(() {
+  //       _resetForm();
+
+  //       if (qrCode == '' || qrCode == "-1" || qrCode == null) {
+  //         this._mobileController.text = "03001230000";
+  //         this._nameController.text = qrCode;
+  //       } else {
+  //         this._mobileController.text = qrCode;
+  //         this._nameController.selection;
+  //       }
+  //     });
+  //   } on PlatformException {
+  //     qrCode = 'Failed to get platform version.';
+  //   }
+  // }
 }
