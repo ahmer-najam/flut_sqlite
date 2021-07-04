@@ -1,3 +1,5 @@
+import 'package:flut_sqlite/pages/order_detail_form_page.dart';
+import 'package:flut_sqlite/pages/order_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -45,6 +47,8 @@ class MyApp extends StatelessWidget {
         ProductFormPage().routeName: (context) => ProductFormPage(),
         OrderHeaderPage().routeName: (context) => OrderHeaderPage(),
         OrderHeaderFormPage().routeName: (context) => OrderHeaderFormPage(),
+        OrderDetailPage().routeName: (context) => OrderDetailPage(),
+        OrderDetailFormPage().routeName: (context) => OrderDetailFormPage(),
       },
       debugShowCheckedModeBanner: false,
     );
