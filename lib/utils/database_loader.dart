@@ -1,5 +1,3 @@
-import 'package:flut_sqlite/models/order_header.dart';
-import 'package:flut_sqlite/models/product.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:uuid/uuid.dart';
 import '../models/brand.dart';
@@ -9,6 +7,9 @@ import '../models/garment_type.dart';
 import '../models/product_size.dart';
 import '../models/treatment.dart';
 import '../models/product_color.dart';
+import '../models/product.dart';
+import '../models/order_header.dart';
+import '../models/order_detail.dart';
 
 class DatabaseLoader {
   onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -94,6 +95,21 @@ class DatabaseLoader {
         ${OrderHeader.colOrderDate} TEXT NOT NULL,
         ${OrderHeader.colCustomerId} TEXT NOT NULL,
         ${OrderHeader.colOrderAmount} DOUBLE NOT NULL)
+      ''');
+
+    db.execute("DROP TABLE IF EXISTS ${OrderDetail.tblOrderDetail}");
+    db.execute('''
+          CREATE TABLE IF NOT EXISTS ${OrderDetail.tblOrderDetail}(
+        ${OrderDetail.colId} TEXT PRIMARY KEY,
+        ${OrderDetail.colOrderHeaderId} TEXT NOT NULL,
+        ${OrderDetail.colProductId} TEXT NOT NULL,
+        ${OrderDetail.colGarmentTypeId} TEXT NOT NULL,
+        ${OrderDetail.colTreatmentId} TEXT NOT NULL,
+        ${OrderDetail.colProductColorId} TEXT NOT NULL,
+        ${OrderDetail.colProductSizeId} TEXT NOT NULL,
+        ${OrderDetail.colUnitPrice} DOUBLE NOT NULL,
+        ${OrderDetail.colQty} DOUBLE NOT NULL,
+        ${OrderDetail.colTotal} DOUBLE NOT NULL)
       ''');
   }
 

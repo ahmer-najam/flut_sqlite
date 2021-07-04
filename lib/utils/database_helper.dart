@@ -15,10 +15,11 @@ import '../models/product_size.dart';
 import '../models/customer.dart';
 import '../models/product.dart';
 import '../models/order_header.dart';
+import '../models/order_detail.dart';
 
 class DatabaseHelper {
   static const _databaseName = "ContactData.db";
-  static const _databaseVersion = 31;
+  static const _databaseVersion = 32;
 
   static final DatabaseHelper instance = DatabaseHelper._();
   //single ton class
@@ -145,6 +146,22 @@ class DatabaseHelper {
   }
 
   // ProductColor
+  Future<dynamic> getProductColorById(String id) async {
+    Database db = await database;
+    List<Map> x = await db.query(ProductColor.tblProductColor,
+        where: '${ProductColor.colId}=?', whereArgs: [id]);
+    String result = "";
+
+    if (x.length == 0) {
+      result = "";
+    } else {
+      List<ProductColor> productColors =
+          x.map((e) => ProductColor.fromMap(e)).toList();
+      result = productColors[0].name;
+    }
+    return result;
+  }
+
   Future<int> insertProductColor(ProductColor productColor) async {
     Database db = await database;
     var uuid = new Uuid();
@@ -174,6 +191,22 @@ class DatabaseHelper {
   }
 
   // GarmentType
+  Future<dynamic> getGarmentTypeById(String id) async {
+    Database db = await database;
+    List<Map> x = await db.query(GarmentType.tblGarmentType,
+        where: '${GarmentType.colId}=?', whereArgs: [id]);
+    String result = "";
+
+    if (x.length == 0) {
+      result = "";
+    } else {
+      List<GarmentType> garmentTypes =
+          x.map((e) => GarmentType.fromMap(e)).toList();
+      result = garmentTypes[0].name;
+    }
+    return result;
+  }
+
   Future<int> insertGarmentType(GarmentType garmentType) async {
     Database db = await database;
     var uuid = new Uuid();
@@ -203,6 +236,21 @@ class DatabaseHelper {
   }
 
   // Treatment
+  Future<dynamic> getTreatmentById(String id) async {
+    Database db = await database;
+    List<Map> x = await db.query(Treatment.tblTreatment,
+        where: '${Treatment.colId}=?', whereArgs: [id]);
+    String result = "";
+
+    if (x.length == 0) {
+      result = "";
+    } else {
+      List<Treatment> treatments = x.map((e) => Treatment.fromMap(e)).toList();
+      result = treatments[0].name;
+    }
+    return result;
+  }
+
   Future<int> insertTreatment(Treatment treatment) async {
     Database db = await database;
     var uuid = new Uuid();
@@ -276,6 +324,22 @@ class DatabaseHelper {
   }
 
   // ProductSize
+  Future<dynamic> getProductSizeById(String id) async {
+    Database db = await database;
+    List<Map> x = await db.query(ProductSize.tblProductSize,
+        where: '${ProductSize.colId}=?', whereArgs: [id]);
+    String result = "";
+
+    if (x.length == 0) {
+      result = "";
+    } else {
+      List<ProductSize> productSizes =
+          x.map((e) => ProductSize.fromMap(e)).toList();
+      result = productSizes[0].name;
+    }
+    return result;
+  }
+
   Future<int> insertProductSize(ProductSize productSize) async {
     Database db = await database;
     var uuid = new Uuid();
@@ -349,6 +413,21 @@ class DatabaseHelper {
   }
 
   // Product
+  Future<dynamic> getProductById(String id) async {
+    Database db = await database;
+    List<Map> x = await db.query(Product.tblProduct,
+        where: '${Product.colId}=?', whereArgs: [id]);
+    String result = "";
+
+    if (x.length == 0) {
+      result = "";
+    } else {
+      List<Product> products = x.map((e) => Product.fromMap(e)).toList();
+      result = products[0].name;
+    }
+    return result;
+  }
+
   Future<int> insertProduct(Product product) async {
     Database db = await database;
     var uuid = new Uuid();
@@ -404,5 +483,34 @@ class DatabaseHelper {
     return orderHeaders.length == 0
         ? []
         : orderHeaders.map((e) => OrderHeader.fromMap(e)).toList();
+  }
+
+  // OrderDetail
+  Future<int> insertOrderDetail(OrderDetail orderDetail) async {
+    Database db = await database;
+    var uuid = new Uuid();
+    orderDetail.id = uuid.v4();
+
+    return await db.insert(OrderDetail.tblOrderDetail, orderDetail.toMap());
+  }
+
+  Future<int> updateOrderDetail(OrderDetail orderDetail) async {
+    Database db = await database;
+    return await db.update(OrderDetail.tblOrderDetail, orderDetail.toMap(),
+        where: '${OrderDetail.colId}=?', whereArgs: [orderDetail.id]);
+  }
+
+  Future<int> deleteOrderDetail(String id) async {
+    Database db = await database;
+    return await db.delete(OrderDetail.tblOrderDetail,
+        where: '${OrderDetail.colId}=?', whereArgs: [id]);
+  }
+
+  Future<List<OrderDetail>> getOrderDetail() async {
+    Database db = await database;
+    List<Map> orderDetails = await db.query(OrderDetail.tblOrderDetail);
+    return orderDetails.length == 0
+        ? []
+        : orderDetails.map((e) => OrderDetail.fromMap(e)).toList();
   }
 }
