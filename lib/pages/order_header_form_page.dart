@@ -1,3 +1,4 @@
+import 'package:flut_sqlite/pages/order_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
@@ -214,7 +215,7 @@ class _OrderHeaderFormPageState extends State<OrderHeaderFormPage> {
           await _databaseHelper.updateOrderHeader(_orderHeader);
         }
 
-        Navigator.popAndPushNamed(context, OrderHeaderPage().routeName,
+        Navigator.popAndPushNamed(context, OrderDetailPage().routeName,
             arguments: _orderHeader);
         // _resetForm();
       } else {
